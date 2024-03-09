@@ -1,0 +1,133 @@
+basePath: /
+definitions:
+  handler.AccessResponse:
+    properties:
+      access_token:
+        type: string
+    type: object
+  handler.GenericError:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  handler.SigninRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  handler.SigninResponse:
+    properties:
+      refresh_token:
+        type: string
+    type: object
+  handler.SignupRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+host: localhost:8081
+info:
+  contact: {}
+  title: User Microservice
+  version: "0.1"
+paths:
+  /auth/access:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.AccessResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.GenericError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.GenericError'
+      security:
+      - ApiKeyAuth: []
+      summary: Get new access token (need refresh token)
+      tags:
+      - auth
+  /auth/signin:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: account info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handler.SigninRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.SigninResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.GenericError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.GenericError'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/handler.GenericError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.GenericError'
+      summary: Login into created account
+      tags:
+      - auth
+  /auth/signup:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: account info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handler.SignupRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/handler.GenericError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.GenericError'
+      summary: Register an account
+      tags:
+      - auth
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

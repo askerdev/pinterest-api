@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "github.com/askerdev/pinterest.gallery/docs"
 	"github.com/askerdev/pinterest.gallery/internal/application"
 	"github.com/askerdev/pinterest.gallery/internal/handler"
 	"github.com/askerdev/pinterest.gallery/internal/repository"
@@ -9,6 +10,15 @@ import (
 	"go.uber.org/fx"
 )
 
+// @title Gallery Microservice
+// @version 0.1
+
+// @BasePath /
+// @host localhost:8082
+
+// @securityDefinitions.apiKey ApiKeyAuth
+// @in header
+// @name Authorization
 func main() {
 	application.MustSetupConfig()
 

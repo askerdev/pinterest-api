@@ -28,10 +28,7 @@ func NewFiberErrorHandler(log *zap.Logger) func(c fiber.Ctx, err error) error {
 
 		if code == fiber.StatusInternalServerError {
 			log.Error("Internal error", zap.Error(err))
-			return c.Status(code).JSON(fiber.Error{
-				Message: "server error",
-				Code:    code,
-			})
+			return c.Status(fiber.StatusInternalServerError).JSON(ServerError)
 		}
 
 		return c.Status(code).JSON(e)

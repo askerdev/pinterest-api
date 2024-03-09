@@ -1,0 +1,129 @@
+basePath: /
+definitions:
+  domain.Photo:
+    properties:
+      id:
+        type: string
+      title:
+        type: string
+      url:
+        type: string
+      user_id:
+        type: string
+    type: object
+  errs.ErrMap:
+    additionalProperties:
+      type: string
+    type: object
+  errs.FormError:
+    properties:
+      code:
+        type: integer
+      errors:
+        $ref: '#/definitions/errs.ErrMap'
+      message:
+        type: string
+    type: object
+  handler.CreatePhotoRequest:
+    properties:
+      title:
+        type: string
+      url:
+        type: string
+    type: object
+  handler.GenericError:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+host: localhost:8082
+info:
+  contact: {}
+  title: Gallery Microservice
+  version: "0.1"
+paths:
+  /photo:
+    get:
+      parameters:
+      - description: get photo feed by user id
+        in: query
+        name: user_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Photo'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.GenericError'
+      security:
+      - ApiKeyAuth: []
+      summary: get photo feed
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: photo info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CreatePhotoRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errs.FormError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.GenericError'
+      security:
+      - ApiKeyAuth: []
+      summary: create new photo
+  /photo/{id}:
+    delete:
+      parameters:
+      - description: Photo id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.GenericError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.GenericError'
+      security:
+      - ApiKeyAuth: []
+      summary: delete photo
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
